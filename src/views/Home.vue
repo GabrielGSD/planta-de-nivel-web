@@ -13,7 +13,12 @@
               />
             </v-avatar>
             <h2 class="name">Overshoot</h2>
-            <h3 class="value">100 %</h3>
+            <h3 class="value">
+              {{
+                parseFloat(data.malhaFechadaControlador.overshoot.toFixed(3))
+              }}
+              %
+            </h3>
           </v-card>
         </v-hover>
       </v-col>
@@ -24,7 +29,9 @@
               <h1 style="font-size: 1.5em; color: #63819f">Kp</h1>
             </v-avatar>
             <h2 class="name">Ganho proporcional</h2>
-            <h3 class="value">6,29939</h3>
+            <h3 class="value">
+              {{ data.malhaFechadaControlador.kpRecomendado }}
+            </h3>
           </v-card>
         </v-hover>
       </v-col>
@@ -35,7 +42,9 @@
               <h1 style="font-size: 1.5em; color: #63819f">Ki</h1>
             </v-avatar>
             <h2 class="name">Ganho integral</h2>
-            <h3 class="value">0,3688</h3>
+            <h3 class="value">
+              {{ data.malhaFechadaControlador.kiRecomendado }}
+            </h3>
           </v-card>
         </v-hover>
       </v-col>
@@ -50,17 +59,12 @@
               />
             </v-avatar>
             <h2 class="name">Tempo de acomodação</h2>
-            <h3 class="value">70s</h3>
+            <h3 class="value">
+              {{ data.malhaFechadaControlador.tempoAcomodacao }} s
+            </h3>
           </v-card>
         </v-hover>
       </v-col>
-    </v-row>
-
-    <v-row>
-      <h3>Calculos</h3>
-      <v-col v-for="(item, i) in items" :key="i"
-        ><img :src="item.src" alt=""
-      /></v-col>
     </v-row>
 
     <v-row class="box">
@@ -108,7 +112,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!load">
+    <v-row class="box-2" v-if="!load">
       <section class="chart-container">
         <vue-anychart
           :options="CombineOptions"
@@ -176,6 +180,7 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  max-width: 340px;
 }
 
 .btn-group .v-btn {
@@ -195,6 +200,19 @@ h3 {
   border-radius: 20px;
   box-shadow: 0 3px 3px 1px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
     0 1px 5px 0 rgb(0 0 0 / 12%);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.box-2 {
+  margin: 0 auto;
+  max-width: 60vw;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 3px 3px 1px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%);
+  margin-top: 40px !important;
 }
 
 .chart {
@@ -239,7 +257,7 @@ export default {
       xAxisIsModified: false,
       pieDataIsModified: false,
       data: [],
-      load: true,
+      load: false,
       items: [
         {
           src: require("../assets/img/conta_1.jpg"),
@@ -476,12 +494,10 @@ export default {
       }
 
       for (let index = 0; index < sizeX; index++) {
-        if (
-          Number.isInteger(this.data.malhaFechadaGanhoProporcional.x[index])
-        ) {
+        if (Number.isInteger(this.data.malhaFechadaControlador.x[index])) {
           mfpi.push({
-            x: this.data.malhaFechadaGanhoProporcional.x[index],
-            value: this.data.malhaFechadaGanhoProporcional.value[index],
+            x: this.data.malhaFechadaControlador.x[index],
+            value: this.data.malhaFechadaControlador.value[index],
           });
         }
       }
@@ -508,7 +524,7 @@ export default {
             {
               seriesType: "spline",
               name: "Malha Fechada com Ganho PI",
-              normal: { stroke: { color: "#40A1F5", thickness: 2.5 } },
+              normal: { stroke: { color: "#30B7F8", thickness: 2.5 } },
               data: mfpi,
             },
           ],
@@ -522,6 +538,8 @@ export default {
       const res = await fetch("http://localhost:5000/");
       const dados = await res.json();
       this.data = dados;
+
+      this.createOMQ();
     },
   },
 };
