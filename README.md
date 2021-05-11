@@ -26,6 +26,8 @@ Desde então, a demonstração pode ser iniciada em seu navegador:
   <img height="250" src="https://user-images.githubusercontent.com/57488202/117463263-d826bc00-af25-11eb-946b-e812943c1ebd.png" />
   <img height="250" src="https://user-images.githubusercontent.com/57488202/117463907-86cafc80-af26-11eb-80cd-0aa935019cf9.png" />
 </p>
+
+---
 ## Colaboradores
 
 <table>
